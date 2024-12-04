@@ -1,0 +1,13 @@
+Table: rules
+========================================================================================================================
+Field               Type                Null      Key       Default                  Extra                    
+========================================================================================================================
+id                  int(11)             NO        PRI       None                     auto_increment           
+action              text                NO                  None                                              
+conditions          text                NO                  None                                              
+priority            int(11)             NO                  None                                              
+description         text                NO                  None                                              
+rule_id             varchar(512)        NO                  None                                              
+ruleNamespace       varchar(256)        NO                  None                                              
+updated_on          datetime            YES                 None                                              
+created_on          timestamp           NO                  CURRENT_TIMESTAMP        on update CURRENT_TIMESTAMP

@@ -1,0 +1,17 @@
+Table: requests
+========================================================================================================================
+Field               Type                Null      Key       Default                  Extra                    
+========================================================================================================================
+id                  int(11)             NO        PRI       None                     auto_increment           
+cr_account          varchar(255)        YES                 None                                              
+dr_account          varchar(255)        YES                 None                                              
+transaction_time    datetime            YES                 None                                              
+decision            text                YES                 None                                              
+score               int(11)             YES                 None                                              
+name_space          varchar(255)        YES                 None                                              
+request_payload     text                YES                 None                                              
+response_message    text                YES                 None                                              
+response_payload    text                YES                 None                                              
+response_status     varchar(255)        YES                 None                                              
+updated_on          datetime            YES                 None                                              
+created_on          datetime            YES                 None                                              
