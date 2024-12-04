@@ -7,7 +7,7 @@ def get_table_structure(request, table_name):
     try:
         # Use Django's database introspection to get table structure
         cursor = connection.cursor()
-        cursor.execute(f"DESCRIBE {rules}")
+        cursor.execute(f"DESCRIBE {table_name}")
         columns = cursor.fetchall()
 
         # Format the response
@@ -22,10 +22,10 @@ def get_table_structure(request, table_name):
                 "Extra": column[5],   # Extra information (e.g., auto_increment)
             })
 
-            for row in table_structure:
-                print(f"------------------------------------------------------------")
-                print(f"{row}")
-                print(f"------------------------------------------------------------")
+        for row in table_structure:
+            print(f"------------------------------------------------------------")
+            print(f"{row}")
+            print(f"------------------------------------------------------------")
 
         return JsonResponse({"table_structure": table_structure})
     except Exception as e:
