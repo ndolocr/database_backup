@@ -1,6 +1,11 @@
+import os
+from django.conf import settings
 from django.db import connection
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.http import JsonResponse
+
+from datetime import datetime
 
 # Create your views here.
 def get_table_structure(request, table_name):
@@ -28,5 +33,38 @@ def get_table_structure(request, table_name):
             print(f"------------------------------------------------------------")
 
         return JsonResponse({"table_structure": table_structure})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def archive_table_structure(request, table_name):
+    try:
+
+        # Use Django's database introspection to get table structure
+        cursor = connection.cursor()
+        cursor.execute(f"DESCRIBE {table_name}")
+        columns = cursor.fetchall()
+
+        # File path to save the table structure
+        file_path = os.path.join(settings.BASE_DIR, f"{table_name}_structure.txt")
+
+        # Write table structure to the file
+        with open(file_path, "w") as file:
+            file.write(f"Table: {table_name}\n")
+            file.write("=" * 120 + "\n")
+            file.write(f"{'Field':<20}{'Type':<20}{'Null':<10}{'Key':<10}{'Default':<25}{'Extra':<25}\n")
+            file.write("=" * 120 + "\n")
+            for column in columns:
+                file.write(
+                    f"{column[0]:<20}{column[1]:<20}{column[2]:<10}{column[3]:<10}{str(column[4]):<25}{column[5]:<25}\n"
+                )
+
+        current_time = datetime.now()
+        # Open the file and prepare it for download
+        with open(file_path, "rb") as file:
+            response = HttpResponse(file.read(), content_type="text/plain")
+            response["Content-Disposition"] = f"attachment; filename={table_name}_structure_{current_time}.txt"
+            return response
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
