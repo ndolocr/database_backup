@@ -7,6 +7,9 @@ from django.http import JsonResponse
 
 from datetime import datetime
 
+from database.models import Rule
+from database.models import Request
+
 # Create your views here.
 def get_table_structure(request, table_name):
     try:
@@ -64,6 +67,39 @@ def archive_table_structure(request, table_name):
         with open(file_path, "rb") as file:
             response = HttpResponse(file.read(), content_type="text/plain")
             response["Content-Disposition"] = f"attachment; filename={table_name}_structure_{current_time}.txt"
+            return response
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+def write_table_data_to_file(request, table_name):
+    try:
+        # Use raw SQL to fetch all data from the specified table
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM {table_name}")
+        rows = cursor.fetchall()
+        column_names = [desc[0] for desc in cursor.description]
+
+        # File path to save the table data
+        file_path = os.path.join(settings.BASE_DIR, f"{table_name}_data.txt")
+
+        # Write table data to the file
+        with open(file_path, "w") as file:
+            # Write header
+            file.write(f"Data from table: {table_name}\n")
+            file.write("=" * 100 + "\n")
+            file.write("\t".join(column_names) + "\n")
+            file.write("=" * 100 + "\n")
+            
+            # Write each row
+            for row in rows:
+                file.write("\t".join(str(value) if value is not None else "NULL" for value in row) + "\n")
+
+        current_time = datetime.now()
+        # Open the file and prepare it for download
+        with open(file_path, "rb") as file:
+            response = HttpResponse(file.read(), content_type="text/plain")
+            response["Content-Disposition"] = f"attachment; filename={table_name}_data_{current_time}.txt"
             return response
 
     except Exception as e:
