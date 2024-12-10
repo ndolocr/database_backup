@@ -5,16 +5,15 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def desktop_folder_contents(request):
+def desktop_folder_contents(request, folder_name):
     # Get the user's home directory
-    home_dir = Path.home()
-    # Append the "Desktop" folder to the home directory
-    desktop_folder = home_dir / "Desktop"
+    home_dir = Path.home()    
+    folder_path = home_dir / f"{folder_name}"
 
-    # Verify if the Desktop folder exists
-    if desktop_folder.exists() and desktop_folder.is_dir():
-        print(f"Desktop Folder --> {desktop_folder}")
-        return str(desktop_folder)
+    # Verify if the folder exists
+    if folder_path.exists() and folder_path.is_dir():
+        print(f"Folder Path --> {str(folder_path)}")
+        return str(folder_path)
     else:
         print(f"No Desktop Folder found")
         return None  # Handle case where the folder does not exist
