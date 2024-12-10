@@ -6,7 +6,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 
-def desktop_folder_contents(request, folder_name):
+def access_folder_contents(request, folder_name):
     # Get the user's home directory
     home_dir = Path.home()    
     folder_path = home_dir / f"{folder_name}"
